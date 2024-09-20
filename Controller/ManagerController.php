@@ -10,6 +10,7 @@ use Artgris\Bundle\FileManagerBundle\Service\FilemanagerService;
 use Artgris\Bundle\FileManagerBundle\Service\FileTypeService;
 use Artgris\Bundle\FileManagerBundle\Twig\OrderExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -47,7 +48,7 @@ class ManagerController extends AbstractController {
     /**
      * ManagerController constructor.
      */
-    public function __construct(private FilemanagerService $filemanagerService, private EventDispatcherInterface $dispatcher, private TranslatorInterface $translator, private RouterInterface $router, private FormFactoryInterface $formFactory) {
+    public function __construct(private FilemanagerService $filemanagerService, private EventDispatcherInterface $dispatcher, private TranslatorInterface $translator, private RouterInterface $router, private FormFactoryInterface $formFactory, private ParameterBagInterface $parameterBag) {
     }
 
     #[Route('/', name: 'file_manager')]
@@ -112,7 +113,7 @@ class ManagerController extends AbstractController {
         $formDelete = $this->createDeleteForm()->createView();
         $fileArray = [];
         foreach ($finderFiles as $file) {
-            $fileArray[] = new File($file, $this->translator, $fileTypeService, $fileManager);
+            $fileArray[] = new File($file, $this->translator, $fileTypeService, $fileManager, $this->parameterBag);
         }
 
         if ('dimension' === $orderBy) {
